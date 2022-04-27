@@ -60,31 +60,39 @@ public class StarPrinterHelper {
             @Override
             public void onStatus(boolean result, Communication.Result communicateResult) {
                 String msg;
+                boolean status;
                 switch (communicateResult) {
                     case Success:
                         msg = "Success!";
+                        status = true;
                         break;
                     case ErrorOpenPort:
                         msg = "Fail to openPort";
+                        status = false;
                         break;
                     case ErrorBeginCheckedBlock:
                         msg = "Printer is offline (beginCheckedBlock)";
+                        status = false;
                         break;
                     case ErrorEndCheckedBlock:
                         msg = "Printer is offline (endCheckedBlock)";
+                        status = false;
                         break;
                     case ErrorReadPort:
                         msg = "Read port error (readPort)";
+                        status = false;
                         break;
                     case ErrorWritePort:
+                        status = false;
                         msg = "Write port error (writePort)";
                         break;
                     default:
                         msg = "Unknown error";
+                        status = false;
                         break;
                 }
                 if (printInterface != null)
-                    printInterface.callback(msg);
+                    printInterface.callback(status,msg);
 //                Utils.ShowToastMessage(getActivity(), context,msg,Toast.LENGTH_SHORT).show();
             }
         });     // 10000mS!!!

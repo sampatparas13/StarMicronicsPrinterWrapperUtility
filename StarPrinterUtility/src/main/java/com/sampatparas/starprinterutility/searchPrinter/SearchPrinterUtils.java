@@ -1,17 +1,23 @@
 package com.sampatparas.starprinterutility.searchPrinter;
+
+import static com.sampatparas.starprinterutility.printerUtils.PrinterSettingConstant.IF_TYPE_ALL;
 import static com.sampatparas.starprinterutility.printerUtils.PrinterSettingConstant.IF_TYPE_BLUETOOTH;
 import static com.sampatparas.starprinterutility.printerUtils.PrinterSettingConstant.IF_TYPE_ETHERNET;
 import static com.sampatparas.starprinterutility.printerUtils.PrinterSettingConstant.IF_TYPE_USB;
+
 import android.app.Activity;
 import android.os.AsyncTask;
+
 import com.sampatparas.starprinterutility.Utils.Utils;
 import com.sampatparas.starprinterutility.interfaces.PrinterListCallBack;
 import com.sampatparas.starprinterutility.model.SearchResultInfo;
 import com.starmicronics.stario.PortInfo;
 import com.starmicronics.stario.StarIOPort;
 import com.starmicronics.stario.StarIOPortException;
+
 import java.util.ArrayList;
 import java.util.List;
+
 public class SearchPrinterUtils {
     int count = 0;
     Activity activity;
@@ -153,6 +159,21 @@ public class SearchPrinterUtils {
             searchResultArray.add(searchResultInfo);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+
+    public void searchPrinter(String type) {
+        if (type.equalsIgnoreCase(IF_TYPE_ETHERNET)) {
+            startSearchToLan();
+        } else if (type.equalsIgnoreCase(IF_TYPE_BLUETOOTH)) {
+            startSearchToBluetooth();
+        }
+        else if (type.equalsIgnoreCase(IF_TYPE_USB)) {
+            startSearchToUsb();
+        }
+        else if (type.equalsIgnoreCase(IF_TYPE_ALL)) {
+            startSearchAll();
         }
     }
 }

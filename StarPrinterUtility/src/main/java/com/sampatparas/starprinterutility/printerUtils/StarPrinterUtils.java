@@ -28,16 +28,15 @@ public class StarPrinterUtils {
     private static void printReceiptFromStarPrinter(Activity context, Bitmap b, OnPrintCompletedListener listener) {
         StarPrinterHelper.print(context, 8, PrinterSettingConstant.LANGUAGE_ENGLISH, b, new PrintInterface() {
             @Override
-            public void callback(String result) {
-                Log.e(TAG, "StarPrinterHelper : " + result);
+            public void callback(Boolean status, String message) {
                 if(listener != null){
-                    listener.onPrintReceiptStatus(result);
+                    listener.onPrintReceiptStatus(status,message);
                 }
             }
         });
 
     }
     public interface OnPrintCompletedListener{
-        void onPrintReceiptStatus(String result);
+        void onPrintReceiptStatus(boolean status ,String message);
     }
 }

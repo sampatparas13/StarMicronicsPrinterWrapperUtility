@@ -1,6 +1,6 @@
 package com.sampatparas.starprinterutility.interfaces;
 
 public interface PrintInterface {
-    void callback(String result);
+    void callback(Boolean result, String message);
 }
 

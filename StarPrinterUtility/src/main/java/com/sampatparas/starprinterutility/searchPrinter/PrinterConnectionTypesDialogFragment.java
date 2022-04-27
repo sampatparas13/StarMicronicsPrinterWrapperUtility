@@ -1,4 +1,10 @@
 package com.sampatparas.starprinterutility.searchPrinter;
+
+import static com.sampatparas.starprinterutility.printerUtils.PrinterSettingConstant.IF_TYPE_ALL;
+import static com.sampatparas.starprinterutility.printerUtils.PrinterSettingConstant.IF_TYPE_BLUETOOTH;
+import static com.sampatparas.starprinterutility.printerUtils.PrinterSettingConstant.IF_TYPE_ETHERNET;
+import static com.sampatparas.starprinterutility.printerUtils.PrinterSettingConstant.IF_TYPE_USB;
+
 import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,15 +14,18 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
 import com.sampatparas.starprinterutility.R;
 import com.sampatparas.starprinterutility.interfaces.PrinterTypeCallBack;
 
 public class PrinterConnectionTypesDialogFragment extends BaseDialogFragment {
     private RadioGroup radioGroup;
     private PrinterTypeCallBack printerTypeCallBack;
+
     public static PrinterConnectionTypesDialogFragment newInstance(PrinterTypeCallBack printerTypeCallBack) {
         PrinterConnectionTypesDialogFragment dialogFragment = new PrinterConnectionTypesDialogFragment();
         dialogFragment.setCallback(printerTypeCallBack);
@@ -24,7 +33,7 @@ public class PrinterConnectionTypesDialogFragment extends BaseDialogFragment {
     }
 
     private void setCallback(PrinterTypeCallBack printerTypeCallBack) {
-     this.printerTypeCallBack = printerTypeCallBack;
+        this.printerTypeCallBack = printerTypeCallBack;
 
     }
 
@@ -34,6 +43,7 @@ public class PrinterConnectionTypesDialogFragment extends BaseDialogFragment {
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.DialogStylePrinter);
 
     }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -42,6 +52,7 @@ public class PrinterConnectionTypesDialogFragment extends BaseDialogFragment {
         dialog.setCanceledOnTouchOutside(false);
         return dialog;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_connection_types_alert, container, false);
@@ -54,13 +65,26 @@ public class PrinterConnectionTypesDialogFragment extends BaseDialogFragment {
         initView(view);
         radioGroup.setOnCheckedChangeListener((radioGroup, checkedId) -> {
             RadioButton radioButton = (RadioButton) radioGroup.findViewById(checkedId);
-            Log.e("values","button"+radioButton.getText().toString());
-            printerTypeCallBack.callback(radioButton.getText().toString());
+            Log.e("values", "button" + radioButton.getText().toString());
+            printerTypeCallBack.callback(setConnectionType(radioButton.getText().toString()));
             dismiss();
         });
     }
 
+    private String setConnectionType(String str) {
+        if (str.equalsIgnoreCase("LAN")) {
+            return IF_TYPE_ETHERNET;
+        } else if (str.equalsIgnoreCase("Bluetooth")) {
+            return IF_TYPE_BLUETOOTH;
+        } else if (str.equalsIgnoreCase("All")) {
+            return IF_TYPE_ALL;
+        } else if (str.equalsIgnoreCase("USB")) {
+            return IF_TYPE_USB;
+        }
+        return "";
+    }
+
     private void initView(View view) {
-        radioGroup =  view.findViewById(R.id.radioGroup);
+        radioGroup = view.findViewById(R.id.radioGroup);
     }
 }

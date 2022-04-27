@@ -9,9 +9,7 @@ import com.sampatparas.starprinterutility.searchPrinter.SearchPrinterUtils
 class MainActivity : AppCompatActivity() {
     private val TAG = MainActivity::class.java.simpleName
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
 
         SearchPrinterUtils(this, object : PrinterListCallBack {

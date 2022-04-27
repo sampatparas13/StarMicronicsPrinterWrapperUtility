@@ -7,6 +7,7 @@
 
     <RadioGroup
         android:id="@+id/radioGroup"
+        android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -28,6 +29,24 @@
             android:layoutDirection="rtl"
             android:paddingStart="16dp"
             android:text="BLUETOOTH"
+            android:textColor="#000000" />
+
+        <RadioButton
+            android:id="@+id/radioButtonUsb"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:paddingStart="16dp"
+            android:text="USB"
+            android:textColor="#000000" />
+
+        <RadioButton
+            android:id="@+id/radioALL"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutDirection="rtl"
+            android:paddingStart="16dp"
+            android:text="ALL"
             android:textColor="#000000" />
 
     </RadioGroup>

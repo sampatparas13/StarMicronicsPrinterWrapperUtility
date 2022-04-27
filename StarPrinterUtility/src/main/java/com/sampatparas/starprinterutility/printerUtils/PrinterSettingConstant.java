@@ -21,5 +21,6 @@ public class PrinterSettingConstant {
     public static final String IF_TYPE_ETHERNET = "TCP:";
     public static final String IF_TYPE_BLUETOOTH = "BT:";
     public static final String IF_TYPE_USB = "USB:";
+    public static final String IF_TYPE_ALL = "All";
     public static final String IF_TYPE_MANUAL = "Manual:";
 }
