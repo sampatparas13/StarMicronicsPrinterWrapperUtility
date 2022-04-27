@@ -1,7 +1,9 @@
 package com.sampatparas.starprinterutility.ui
+
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.sampatparas.starprinterutility.R
 import com.sampatparas.starprinterutility.adapter.SearchResultAdapter
@@ -15,6 +17,7 @@ import com.sampatparas.starprinterutility.searchPrinter.SearchPrinterUtils
 import kotlinx.android.synthetic.main.activity_testing_print.*
 
 class TestingPrintActivity : AppCompatActivity(), View.OnClickListener {
+    private val TAG = "TestingPrintActivity"
     var searchResultArray: ArrayList<SearchResultInfo> = ArrayList()
     var adapter: SearchResultAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,31 +34,36 @@ class TestingPrintActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(view: View?) {
         when (view?.id) {
-            R.id.buttonTestPrint->
-            {
+            R.id.buttonTestPrint -> {
                 val test = TestReceiptView(this)
                 test.setData("1234")
-                StarPrinterUtils.printReceipts(this, test
+                StarPrinterUtils.printReceipts(
+                    this, test
                 ) { status, message ->
-
+                    Log.e("TestingPrintActivity", "printer :: $message")
                 }
             }
-            R.id.printerName->
-            {
-                val dialog: PrinterConnectionTypesDialogFragment = PrinterConnectionTypesDialogFragment.newInstance { selectedType ->
+            R.id.printerName -> {
+                val dialog: PrinterConnectionTypesDialogFragment =
+                    PrinterConnectionTypesDialogFragment.newInstance { selectedType ->
                         textViewConnectionName.text = selectedType
                         searchResultArray.clear()
-                        SearchPrinterUtils(this,object: PrinterListCallBack{
+                        SearchPrinterUtils(this, object : PrinterListCallBack {
                             @SuppressLint("NotifyDataSetChanged")
                             override fun onSuccessSearchResult(result: MutableList<SearchResultInfo>?) {
+                                recyclerViewListPrinter.visibility = View.VISIBLE
+                                TextViewDataNotFound.visibility = View.GONE
                                 if (adapter != null) {
                                     adapter?.notifyDataSetChanged()
                                 } else {
                                     setAdapter()
                                 }
                             }
-                            override fun onFlailedResult(message: String?) {
 
+                            override fun onFlailedResult(message: String?) {
+                                TextViewDataNotFound.text = message
+                                TextViewDataNotFound.visibility = View.VISIBLE
+                                recyclerViewListPrinter.visibility = View.GONE
                             }
 
                         }).searchPrinter(selectedType)
@@ -65,8 +73,7 @@ class TestingPrintActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun setAdapter()
-    {
+    private fun setAdapter() {
         adapter = SearchResultAdapter(searchResultArray, supportFragmentManager)
         recyclerViewListPrinter.adapter = adapter
     }

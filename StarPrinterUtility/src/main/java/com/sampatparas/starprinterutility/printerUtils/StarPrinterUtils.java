@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.View;
 import com.sampatparas.starprinterutility.interfaces.PrintInterface;
+import com.sampatparas.starprinterutility.model.PrinterSettings;
 
 public class StarPrinterUtils {
     private static final String TAG = StarPrinterUtils.class.getSimpleName();
@@ -18,7 +19,17 @@ public class StarPrinterUtils {
             v.buildDrawingCache(true);
             Bitmap b = Bitmap.createBitmap(v.getDrawingCache());
             v.setDrawingCacheEnabled(false);
-            printReceiptFromStarPrinter(context, b, listener);
+
+            PrinterSettingManager settingManager = new PrinterSettingManager(context);
+            PrinterSettings settings = settingManager.getPrinterSettings();
+            if(settings != null){
+                Log.e(TAG, "settings are not null");
+                printReceiptFromStarPrinter(context, b, listener);
+            }
+            else
+            {
+                listener.onPrintReceiptStatus(false,"printer settings are null");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
