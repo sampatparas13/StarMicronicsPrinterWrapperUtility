@@ -1,20 +1,19 @@
 package com.sampatparas.starprinterutility.searchPrinter;
-
+import static com.sampatparas.starprinterutility.printerUtils.PrinterSettingConstant.IF_TYPE_BLUETOOTH;
+import static com.sampatparas.starprinterutility.printerUtils.PrinterSettingConstant.IF_TYPE_ETHERNET;
+import static com.sampatparas.starprinterutility.printerUtils.PrinterSettingConstant.IF_TYPE_USB;
 import android.app.Activity;
 import android.os.AsyncTask;
-
 import com.sampatparas.starprinterutility.Utils.Utils;
 import com.sampatparas.starprinterutility.interfaces.PrinterListCallBack;
 import com.sampatparas.starprinterutility.model.SearchResultInfo;
-import com.sampatparas.starprinterutility.printerUtils.PrinterSettingConstant;
 import com.starmicronics.stario.PortInfo;
 import com.starmicronics.stario.StarIOPort;
 import com.starmicronics.stario.StarIOPortException;
-
 import java.util.ArrayList;
 import java.util.List;
-
 public class SearchPrinterUtils {
+    int count = 0;
     Activity activity;
     PrinterListCallBack printerTypeCallBack;
     private List<SearchResultInfo> searchResultArray = new ArrayList<>();
@@ -24,17 +23,32 @@ public class SearchPrinterUtils {
         this.printerTypeCallBack = printerTypeCallBack;
     }
 
-    public void startSearch(String name) {
+    public void startSearchToLan() {
+        searchResultArray.clear();
         SearchTask searchTask = new SearchTask();
-        searchTask.execute(getConnectionName(name));
+        searchTask.execute(IF_TYPE_ETHERNET);
     }
 
-    private String getConnectionName(String name) {
+    public void startSearchToBluetooth() {
+        searchResultArray.clear();
+        SearchTask searchTask = new SearchTask();
+        searchTask.execute(IF_TYPE_BLUETOOTH);
+    }
 
-        if (name.equalsIgnoreCase("LAN")) {
-            return "TCP:";
-        } else {
-            return "BT:";
+    public void startSearchToUsb() {
+        searchResultArray.clear();
+        SearchTask searchTask = new SearchTask();
+        searchTask.execute(IF_TYPE_USB);
+    }
+
+
+    public void startSearchAll() {
+        count = 0;
+        searchResultArray.clear();
+        String[] str = new String[]{IF_TYPE_ETHERNET, IF_TYPE_BLUETOOTH, IF_TYPE_USB};
+        for (String s : str) {
+            SearchTaskAll searchTask = new SearchTaskAll();
+            searchTask.execute(s);
         }
     }
 
@@ -67,7 +81,52 @@ public class SearchPrinterUtils {
             for (PortInfo info : mPortList) {
                 addItem(info);
             }
-            printerTypeCallBack.callback(searchResultArray);
+            if (searchResultArray.isEmpty()) {
+                printerTypeCallBack.onFlailedResult("no item found");
+            } else {
+                printerTypeCallBack.onSuccessSearchResult(searchResultArray);
+            }
+        }
+
+    }
+
+    private class SearchTaskAll extends AsyncTask<String, Void, Void> {
+        private List<PortInfo> mPortList;
+
+        SearchTaskAll() {
+            super();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Utils.pDialog(activity);
+        }
+
+        @Override
+        protected Void doInBackground(String... interfaceType) {
+            try {
+                mPortList = StarIOPort.searchPrinter(interfaceType[0], activity);
+            } catch (StarIOPortException e) {
+                mPortList = new ArrayList<>();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void doNotUse) {
+            count++;
+            Utils.pDialogDismiss();
+            for (PortInfo info : mPortList) {
+                addItem(info);
+            }
+            if (count == 3) {
+                if (searchResultArray.isEmpty()) {
+                    printerTypeCallBack.onFlailedResult("no item found");
+                } else {
+                    printerTypeCallBack.onSuccessSearchResult(searchResultArray);
+                }
+            }
         }
     }
 
@@ -77,9 +136,9 @@ public class SearchPrinterUtils {
             String portName;
             String macAddress;
 
-            if (info.getPortName().startsWith(PrinterSettingConstant.IF_TYPE_BLUETOOTH)) {
-                modelName = info.getPortName().substring(PrinterSettingConstant.IF_TYPE_BLUETOOTH.length());
-                portName = PrinterSettingConstant.IF_TYPE_BLUETOOTH + info.getMacAddress();
+            if (info.getPortName().startsWith(IF_TYPE_BLUETOOTH)) {
+                modelName = info.getPortName().substring(IF_TYPE_BLUETOOTH.length());
+                portName = IF_TYPE_BLUETOOTH + info.getMacAddress();
                 macAddress = info.getMacAddress();
             } else {
                 modelName = info.getModelName();

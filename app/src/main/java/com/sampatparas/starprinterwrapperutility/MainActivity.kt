@@ -1,26 +1,26 @@
 package com.sampatparas.starprinterwrapperutility
-
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.sampatparas.starprinterutility.interfaces.PrinterListCallBack
+import com.sampatparas.starprinterutility.model.SearchResultInfo
 import com.sampatparas.starprinterutility.searchPrinter.SearchPrinterUtils
 
 class MainActivity : AppCompatActivity() {
+    private val TAG = MainActivity::class.java.simpleName
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
-        val s = SearchPrinterUtils(
-            this
-        ) { result ->
-            for (info in result) {
-                Toast.makeText(this@MainActivity, "" + info.modelName, Toast.LENGTH_SHORT).show()
-                Log.e(
-                    MainActivity::class.java.simpleName,
-                    "callback: " + info.modelName
-                )
+
+        SearchPrinterUtils(this, object : PrinterListCallBack {
+            override fun onSuccessSearchResult(result: MutableList<SearchResultInfo>?) {
+                Log.e(TAG, "searchListSize "+result?.size)
             }
-        }
-        s.startSearch("LANsdasd")
+            override fun onFlailedResult(message: String?) {
+                Log.e(TAG, " onFlailedResult $message")
+            }
+        }).startSearchAll()
     }
 }

@@ -6,5 +6,6 @@ import com.sampatparas.starprinterutility.model.SearchResultInfo;
 import java.util.List;
 
 public interface PrinterListCallBack {
-    void callback(List<SearchResultInfo> result);
+    void onSuccessSearchResult(List<SearchResultInfo> result);
+    void onFlailedResult(String message);
 }
