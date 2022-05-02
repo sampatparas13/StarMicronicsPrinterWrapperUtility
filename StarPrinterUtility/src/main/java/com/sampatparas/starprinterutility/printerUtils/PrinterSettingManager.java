@@ -1,5 +1,4 @@
 package com.sampatparas.starprinterutility.printerUtils;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
